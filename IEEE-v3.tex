@@ -7,6 +7,15 @@
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `basename #1 .tif`.png}
 %\usepackage{lineno}
 
+%\usepackage{babel}
+\usepackage{nicefrac}
+\usepackage{psfrag}
+\usepackage{subfigure}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+
 \input abbrev
 \input journals
 %\linenumbers*[1]
@@ -132,6 +141,20 @@ The GP is specified by mean and covariance functions. The mean function expresse
 In this work, we use a GP to model our regressand, AERONET AOD at 550 nm, as a function of regressors solar zenith angle, solar azimuth angle,  sensor zenith angle, sensor azimuth angle,  scattering angle, surface reflectance, and MODIS optical depth (land and ocean). We use an affine mean function, essentially allowing us to remove any linear trend in the data before fitting the GP. For the covariance, we took a Mat\'{e}rn function with parameter $\nu$ = $\frac{5}{2}$. The distance between regressors required by this covariance function was set to be a Mahalanobis metric with diagonal covariance matrix. The diagonal elements of this matrix specify characteristic scales of variation for each of our various regressors, that we'll term \emph{length scales}. These length scales can be thought of as the amount one would have to vary the relevant regressor, holding all others fixed, before the regressand would become completely uncorrelated with its previous value.  
 
 Imagine that we now make a change of fixed magnitude in, first, a regressor with small length scale, and second, a regressor with large length scale. The regressand can be expected to vary more dramatically in the first case than in the second. As such, we think of regressors with small input scale as more significant; they are likely to explain more of the variation in the regressand. This gives rise to a widely and successfully used \cite{GPsBook} method of automatic relevance determination (ARD). We assess the importance of a regressor as the range of values for that regressor divided by its the length scale. Normalising by the range allows us to compare regressors of different units; we express the importance of a regressor to the particular dataset at hand. 
+
+\begin{figure*}
+  \centering
+  \small
+\psff{Aqua}
+\hspace{-1cm}
+\psff{Terra}
+  \caption{Mean and $\pm3\sigma$ standard-devation bounds for the
+    predictions of the fault-bucket algorithm on (top), the painting
+    dataset and (bottom), the ``fishkiller'' dataset.  Detected faults are
+    marked in black crosses, and the unobserved true values are marked
+    in grey circles.}
+  \label{justfb}
+\end{figure*}
 
 \section{Significance}
 
