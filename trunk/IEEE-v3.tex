@@ -1,0 +1,156 @@
+%\documentclass[journal,draft,onecolumn,12pt]{IEEEtran}
+\documentclass[journal]{IEEEtran}
+
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `basename #1 .tif`.png}
+%\usepackage{lineno}
+
+\input abbrev
+\input journals
+%\linenumbers*[1]
+
+\everymath={\fam0 }
+
+\begin{document}
+
+\title{Gaussian Processes and Bias Correction of MODIS Aerosol Optical Depth}
+\author{D.J. Lary$^{1}$, M.A. Osborne$^2$\\
+$^1$Hanson Center for Center for Space Science, University of Texas at Dallas, TX, USA\\
+$^2$Department of Engineering Science, University of Oxford, Oxford, England
+}
+\markboth{Gaussian Processes and MODIS AOD Bias Correction}{Lary \MakeLowercase{\textit{et al.}}}
+\maketitle
+
+\begin{abstract}
+
+Gaussian processes are used to explore the reasons for a persistent bias between aerosol optical depth (AOD) retrieved from the MODerate resolution Imaging Spectroradiometer (MODIS) and the accurate ground-based Aerosol Robotics Network (AERONET). While this bias falls within the expected uncertainty of the MODIS algorithms, there is room for algorithm improvement.  The results of the machine learning approaches suggest a link between the MODIS AOD biases and ...
+\end{abstract}
+
+\begin{keywords}
+Aerosol Optical Depth, Gaussian Processes
+\end{keywords}
+\IEEEpeerreviewmaketitle
+
+\section{Introduction}
+
+Aerosol and cloud radiative effects remain the largest uncertainties in our understanding of climate change \cite{IPCC:2007}. Over the past decade observations and retrievals of aerosol characteristics have been conducted from space-based sensors, from airborne instruments and from ground-based samplers and radiometers.  Much effort has been directed at these data sets to collocate observations and retrievals, and to compare results.  Ideally, when two instruments measure the same aerosol characteristic at the same time, the results should agree within well-understood measurement uncertainties.  When inter-instrument biases exist,  we would like to explain them theoretically from first principles. One example of this task is the comparison between the aerosol optical depth (AOD) retrieved by the Moderate Resolution Imaging Spectroradiometer (MODIS) and the AOD measured by the Aerosol Robotics Network (AERONET). While progress has been made in understanding the biases between these two data sets, we still have an imperfect understanding of the root causes. So in this paper we examine the efficacy of empirical machine learning algorithms for bias correction.
+
+\section{Previous Studies}
+
+The MODIS instruments are aboard both the Aqua and Terra satellites, launched May 4, 2002 and December 18, 1999, respectively. The MODIS instruments collect data over the entire globe in two days. The AOD is retrieved using dark target methods in bands at 550, 670, 870, 1240, 1630 and 2130 nm, over ocean, and at 470, 550 and 670 nm over land \cite{Remer:2005, Levy:2007}. Other wavelengths are also used in the retrieval, for instance short wave infrared wavelengths for the land algorithm. Previous MODIS aerosol validation studies have compared the Aqua and Terra MODIS retrieved AOD with the ground-based Aerosol Robotic Network (AERONET) observations \cite{Remer:2005}.  AERONET is a global system of ground-based sun and sky scanning sun photometers that measure AOD in various channels, depending on individual instrument, but usually include measurements at 340, 380, 440, 500, 675, 870 and 1020 nm \cite{Holben:1998}. Measurements are taken every 15 minutes during daylight hours.  AERONET Level 2 quality assured AOD observations are accurate to within 0.01 for wavelengths of 440 nm and higher.
+
+These previous studies concluded that MODIS AOD agreed with AERONET observations to within MODIS expected uncertainties, on a global basis. AERONET is only available for land locations, although some sites are in coastal regions.
+
+However, the correlation for the MODIS ocean algorithm was much better than the agreement for the MODIS land algorithm, in the Collection 4 data set.  Revision and implementation of a new land algorithm and reprocessing of the data resulted in much improvement to the retrieved MODIS AOD over land \cite{Levy:2007}. Even so, there remains a small over-prediction of the AOD for low values, and under-prediction at high AOD values
+\cite{Levy:2007, Remer:2008}. 
+
+In previous studies we intercompared the Normalized Difference Vegetation Indices (NDVI) from different sensors \cite{Brown:2008}.  We have found that machine-learning algorithms are able to effectively perform inter-instrument cross-calibration. Here we extend this approach to consider AOD. In our previous inter-comparison of NDVI, we found that the surface type played a key role in explaining a significant fraction of the inter-instrument differences. In this study we wanted to investigate if the same was true for AOD. 
+
+\cite{Xiao:2009} have examined the difference between AODs retrieved from the Multi-angle Imaging Spectro-Radiometer (MISR) and MODIS over mainland Southeast Asia. They found that though the difference between MISR and MODIS should be small and randomly distributed over space, the difference actually has a strong negative relationship with MODIS AODs and tends to be spatially clustered. They concluded that further research is needed to fully understand the spatial dependence in these differences. The machine learning approach outlined here is also relevant to the MISR comparison of \cite{Xiao:2009}. 
+
+\section{Data Description}
+
+We use the global 10 km MODIS Collection 5 AOD product, over land and ocean, and all the available AERONET version 2.0 data. The AERONET program provides a long-term, continuous and readily accessible public domain database of aerosol optical properties. The network imposes standardization of instruments, calibration, processing and distribution. The location of individual sites is available from the AERONET web site \url{http://aeronet.gsfc.nasa.gov/}. 
+
+We first identify all MODIS overpasses of the AERONET sites throughout the lifetime of the two MODIS missions. We use the single green band MODIS AOD (550 nm) in the geographic grid point that contains the AERONET site. AERONET AOD measurements within 30 minutes of the MODIS observation are averaged. AERONET data are interpolated (in log-log space) to the green band where they are missing. We found a strong correlation between geographic location and bias.  For example, there is a negative bias (MODIS underestimation relative to AERONET) over vegetated Western Africa (from Liberia to Nigeria), and positive bias over the Southwestern U.S.. The spatial dependence of the differences between AERONET and MODIS are shown in Figure~\ref{Figure.aod-spatial} \cite{Paradise:2007}.
+
+\section{AOD Inter-comparison}
+
+Figure~\ref{Figure.aod-nn} panels (a) and (b) show scatter diagram comparisons of AOD from AERONET (x-axis) and MODIS (y-axis) as green circles overlaid with the ideal case of perfect agreement (blue line). The left hand column of plots is for MODIS Aqua and the right hand column of plots is for MODIS Terra. These comparisons between AERONET and MODIS are for the entire period of overlap between the MODIS and AERONET instruments from the launch of the MODIS instrument to the present, and include all possible collocations from all AERONET stations. We note that MODIS has a high bias relative to AERONET (the slope is not 1), there is substantial scatter, and a correlation coefficient of 0.86 for MODIS Aqua and 0.84 for MODIS Terra. The bias and scatter indicate that the agreement between AERONET and MODIS may be dependent on some factors not completely accounted for in the retrievals.  Note that the plots include both land and ocean retrievals. 
+
+In an exploratory data analysis study we examined whether this bias could be explained by a variety of factors including surface type, soil type, cultivation type, cloud reflectivity, and total ozone column, to name just a few. In other words, we constructed a comprehensive set of as many variables as possible and determined which of these variables was correlated with the AOD bias between AERONET and MODIS. It was found that the surface type could explain much of the difference between MODIS and AERONET. The surface classification we used was the global landcover classification for the year 2000 (GLC2000) at a resolution of $\frac{1}{8}^\circ$x\ $\frac{1}{8}^\circ$ (\url{http://www-gem.jrc.it/glc2000/}). Before using the surface classification in our machine learning bias correction (described below), we reordered the surface types such that their annual mean area weighted albedos are in ascending order. The reordering was done as when we use the surface type as an input for the machine learning algorithms it is in effect being treated as a quasi-continuous variable. As the surface reflectivity is one of the most important properties of each surface type for this problem we want a surface type classification which is monotonic in surface reflectivity.
+
+When we augmented the surface type with variables available within the MODIS AOD HDF files (MOD04 and MYD04) we found that the machine learning algorithms were able to further improve their bias correction. In the results presented in Figure~\ref{Figure.aod-nn} the variables we used in explaining the AOD bias  between MODIS and AERONET were the surface type, the solar zenith angle, the solar azimuth angle, the sensor zenith angle, the sensor azimuth angle, the scattering angle, and the reflectance at 550 nm.
+
+%\begin{figure}[t]
+%
+%\begin{center}
+%\vspace{0.0in}
+%\includegraphics[width=3in]{Spatial.png}
+%\vspace{-0.2in}
+%\end{center}
+
+%\caption{MODIS bias with respect to AERONET  \cite{Paradise:2007}. Computed as a regression with intercept at the origin. Red indicates MODIS is higher; blue indicates AERONET is higher. The size of the circle is proportional to the slope of the regression for slope $>$ 1 (where MODIS is higher), and to inverse of the slope for slope $<$ 1.} \label{Figure.aod-spatial}
+%\end{figure}
+%
+%
+%\begin{figure*}[p]
+%
+%\begin{center}
+%{
+%\begin{center}
+%{\sf AERONET MODIS Comparison}
+%\end{center}
+%\vspace{0.1in}
+%
+%\vspace{0.0in}
+% (a)
+% \includegraphics[width=2.5in]{Aqua-scatter-raw.eps}
+% (b)
+% \includegraphics[width=2.5in]{Terra-scatter-raw.eps}
+%
+%\vspace{0.2in}
+%\begin{center}
+%{\sf AERONET MODIS Comparison with Neural Network Bias Correction}
+%\end{center}
+%\vspace{0.1in}
+%
+%\vspace{0.0in}
+% (c)
+% \includegraphics[width=2.5in]{Aqua-scatter-nn.eps}
+% (d)
+% \includegraphics[width=2.5in]{Terra-scatter-nn.eps}
+%
+%\vspace{0.2in}
+%\begin{center}
+%{\sf AERONET MODIS Comparison with Support Vector Machine Bias Correction}
+%\end{center}
+%\vspace{0.1in}
+%
+%\vspace{0.0in}
+% (e)
+% \includegraphics[width=2.5in]{Aqua-scatter-svm.eps}
+% (f)
+% \includegraphics[width=2.5in]{Terra-scatter-svm.eps}
+%
+%\vspace{0.0in}
+%}
+%\end{center}
+%
+%\caption{Scatter diagram comparisons of Aerosol Optical Depth (AOD) from AERONET (x-axis) and MODIS (y-axis) as green circles overlaid with the ideal case of perfect agreement (blue line). The measurements shown in the comparison were made within half an hour of each other, with a great circle separation of less than 0.25$^\circ$ and with a solar zenith angle difference of less than 0.1$^\circ$. The left hand column of plots is for MODIS Aqua and the right hand column of plots is for MODIS Terra. The first row shows the comparisons between AERONET and MODIS for the entire period of overlap between the MODIS and AERONET instruments from the launch of the MODIS instrument to the present. The second row shows the same comparison overlaid with the neural network correction as red circles. We note that the neural network bias correction makes a substantial improvement in the correlation coefficient with AERONET. An improvement from 0.86 to 0.96 for MODIS Aqua and an improvement from 0.84 to 0.92 for MODIS Terra. The third row shows the comparison overlaid with the support vector regression correction as red circles. We note that the support vector regression bias correction makes an even greater improvement in the correlation coefficient than the neural network correction. An improvement from 0.86 to 0.99 for MODIS Aqua and an improvement from 0.84 to 0.99 for MODIS Terra.} \label{Figure.aod-nn}
+%\end{figure*}
+
+
+\subsection{Gaussian Process Models\label{sec:ngpm}}
+
+Gaussian processes (GPs) \cite{GPsBook} are a powerful way to perform regression. Essentially, they fit a multivariate Gaussian probability distribution to any set of regressors, allowing for analytic inference. As a principled Bayesian technique, GPs supply a full posterior distribution for our regressands, giving us both mean estimates as well as an indication of the uncertainty in them.  
+
+The GP is specified by mean and covariance functions. The mean function expresses what we expect for our regressands before having made any observations, and is often taken as a simple constant. The covariance function specifies the correlation between any two regressands; it expresses how we expect our regressands to vary with changes in regressors. Fortunately, there are a wide variety of covariance functions to choose from, allowing for very flexible inference about almost any conceivable regressand function. Both mean and covariance functions are in turn specified by hyperparameters e.g. the constant mean value. Unfortunately, the integrals required to integrate over all possible hyperparameters are normally non-analytic. As such, we will fit hyperparameters using maximum likelihood techniques, a heuristic means of determining the `best fit' hyperparameters given the observed data.  
+
+In this work, we use a GP to model our regressand, AERONET AOD at 550 nm, as a function of regressors solar zenith angle, solar azimuth angle,  sensor zenith angle, sensor azimuth angle,  scattering angle, surface reflectance, and MODIS optical depth (land and ocean). We use an affine mean function, essentially allowing us to remove any linear trend in the data before fitting the GP. For the covariance, we took a Mat\'{e}rn function with parameter $\nu$ = $\frac{5}{2}$. The distance between regressors required by this covariance function was set to be a Mahalanobis metric with diagonal covariance matrix. The diagonal elements of this matrix specify characteristic scales of variation for each of our various regressors, that we'll term \emph{length scales}. These length scales can be thought of as the amount one would have to vary the relevant regressor, holding all others fixed, before the regressand would become completely uncorrelated with its previous value.  
+
+Imagine that we now make a change of fixed magnitude in, first, a regressor with small length scale, and second, a regressor with large length scale. The regressand can be expected to vary more dramatically in the first case than in the second. As such, we think of regressors with small input scale as more significant; they are likely to explain more of the variation in the regressand. This gives rise to a widely and successfully used \cite{GPsBook} method of automatic relevance determination (ARD). We assess the importance of a regressor as the range of values for that regressor divided by its the length scale. Normalising by the range allows us to compare regressors of different units; we express the importance of a regressor to the particular dataset at hand. 
+
+\section{Significance}
+
+MODIS-derived Aerosol Optical Depth may show dependency on surface type either because of the link between surface type and surface reflectance, or because of the covariance between aerosol properties and surface type.  Different surface types (e.g. forests, croplands, pastures, bare rock or soil) exhibit varying reflectance properties.  For example, deciduous forests in full foliage are dark, with reflectances in the range 0.03 to 0.10 in the visible portion of the solar spectrum. Bare soil or rock is bright, with reflectances that can be as high as 0.3 to 0.4.  The MODIS algorithm needs to extract an atmospheric aerosol signal from the combined surface-atmosphere reflectances measured by the satellite sensor.  The separation of atmosphere from surface reflectance is based on assumptions concerning spectral properties of the surface \cite{Levy:2007a}.   These surface spectral properties are determined empirically and are dependent on sun-satellite geometry and an atmospherically resistant vegetation index (NDVI$_{SWIR}$) \cite{Levy:2007a, Karnieli:2001}.  The results of the neural network exercise suggest a residual dependence on surface type in the assumptions of surface reflectance that is not already parameterized by the vegetation index.  Note, that in the development of the current Collection 5 MODIS aerosol algorithm over land, surface type was explored as a possible influential factor before vegetation index was chosen as the parameter.  Vegetation index was chosen over surface type because no unique, linear relationship was found between surface reflectance and wavelength, contingent upon surface type.  The neural network analysis provides a nonlinear relationship that otherwise could not have been found.
+
+On the other hand, the reason for dependence between the MODIS Aerosol Optical Depth and surface type may have nothing to do with surface reflectance, but instead be linked to aerosol optical properties found in different places of the world.  For example, we expect to find a dominance of dust aerosol over bare or desert surfaces, and urban/industrial pollution over urban surfaces.  Other relationships may not be so obvious, but could be revealed by the nonlinear neural network analysis.  The MODIS retrieval algorithm requires assumptions of aerosol properties in order to retrieve aerosol loading.  Assuming dust when the aerosol is actually urban pollution will result in a significantly large error in the AOD retrieval.  The assumptions of aerosol properties are based on a cluster analysis of AERONET retrieval data that are fixed seasonally and geographically \cite{Levy:2007b}.  While this distribution should represent �typical� values, it will introduce errors whenever the actual aerosol properties differ from the expected.  The neural network analysis may represent an adjustment to the algorithm's global and seasonal distribution of assumed aerosol properties, resulting in collocated retrievals closer to AERONET observations.
+
+Overall, the machine learning results show us that there is opportunity in the MODIS aerosol algorithm to improve the accuracy of the AOD retrieval, as compared with AERONET, and that this improvement is linked to surface type.  We can use information from AERONET, from other satellite sensors such as MISR and from detailed field experiments to continue to test and refine the assumptions in the MODIS algorithm.  The results from the machine learning analysis that point to surface type as the missing piece of information will allow us to focus the refinement procedure where it will help most.
+
+\section{Conclusions \label{Section.Conclusions}}
+
+Machine learning algorithms were able to effectively adjust the AOD bias seen between the MODIS instruments and AERONET. Support vector machines performed the best improving the correlation coefficient between the AERONET AOD and the MODIS AOD from 0.86 to 0.99 for MODIS Aqua, and from 0.84 to 0.99 for MODIS Terra. Key in allowing the machine learning algorithms to \lq correct' the MODIS bias was provision of the surface type and other ancillary variables that explain the variance between MODIS and AERONET AOD.
+
+\appendices
+\section*{Acknowledgment}
+
+It is a pleasure to acknowledge NASA for research funding through the awards NNG06GB78G, NNX06AG04G, NNX06AF29G, NNX07AD49G and the NASA Goddard Space Flight Center student DEVELOP Program. We would also like to acknowledge the support supplied by the Systems Engineering for Autonomous Systems (SEAS) Defence Technology Centre, established by the UK Ministry of Defence.
+
+\bibliography{sorted-references}
+\bibliographystyle{IEEEtran}
+
+\end{document}
