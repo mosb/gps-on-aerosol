@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2010.8.27)  17 FEB 2011 19:23
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2010.8.27)  17 FEB 2011 19:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -382,10 +382,10 @@ LaTeX Warning: There were undefined references.
 Here is how much of TeX's memory you used:
  3676 strings out of 495062
  48115 string characters out of 1182644
- 120836 words of memory out of 3000000
+ 122281 words of memory out of 3000000
  6782 multiletter control sequences out of 15000+50000
  38329 words of font info for 102 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
  41i,10n,35p,1773b,329s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on IEEE-v3.dvi (4 pages, 40060 bytes).
+Output written on IEEE-v3.dvi (4 pages, 40396 bytes).
