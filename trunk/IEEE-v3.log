@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2010.8.27)  17 FEB 2011 11:37
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2010.8.27)  17 FEB 2011 11:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -358,12 +358,12 @@ Missing character: There is no ï in font ptmr7t!
 Missing character: There is no ¿ in font ptmr7t!
 Missing character: There is no ½ in font ptmr7t!
 
-Underfull \hbox (badness 1776) in paragraph at lines 174--175
+Underfull \hbox (badness 1776) in paragraph at lines 170--171
 []\OT1/ptm/m/n/10 It is a plea-sure to ac-knowl-edge NASA for re-search
  []
 
 
-Underfull \hbox (badness 1496) in paragraph at lines 174--175
+Underfull \hbox (badness 1496) in paragraph at lines 170--171
 \OT1/ptm/m/n/10 NNX06AF29G, NNX07AD49G and the NASA God-dard
  []
 
@@ -382,12 +382,12 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 3659 strings out of 495062
- 47969 string characters out of 1182644
- 124263 words of memory out of 3000000
- 6771 multiletter control sequences out of 15000+50000
- 34535 words of font info for 93 fonts, out of 3000000 for 9000
+ 3652 strings out of 495062
+ 47884 string characters out of 1182644
+ 122415 words of memory out of 3000000
+ 6764 multiletter control sequences out of 15000+50000
+ 33904 words of font info for 90 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
- 41i,9n,35p,1773b,333s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 41i,9n,35p,1773b,329s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on IEEE-v3.dvi (4 pages, 36972 bytes).
+Output written on IEEE-v3.dvi (4 pages, 36080 bytes).
