@@ -140,11 +140,13 @@ The \gp\ is specified by mean and covariance functions. The mean function expres
 
 In this work, we use a \gp\ to model our regressand, AERONET AOD at 550 nm, as a function of regressors solar zenith angle, solar azimuth angle,  sensor zenith angle, sensor azimuth angle,  scattering angle, surface reflectance, and MODIS optical depth (land and ocean). We use an affine mean function, essentially allowing us to remove any linear trend in the data before fitting the \gp. For the covariance, we took a Mat\'{e}rn function with parameter $\nu$ = $\frac{5}{2}$. The distance between regressors required by this covariance function was set to be a Mahalanobis metric with diagonal covariance matrix. The diagonal elements of this matrix specify characteristic scales of variation for each of our various regressors, that we'll term \emph{length scales}. These length scales can be thought of as the amount one would have to vary the relevant regressor, holding all others fixed, before the regressand would become completely uncorrelated with its previous value.  
 
-We can use these length scales to assess the relative importances of each regressor to our regression. Imagine that we make a change of fixed magnitude in, first, a regressor with small length scale, and second, a regressor with large length scale. The regressand can be expected to vary more dramatically in the first case than in the second. As such, we think of regressors with small length scale as more significant; they are likely to explain more of the variation in the regressand. This gives rise to a widely and successfully used \cite{GPsBook} method of automatic relevance determination (ARD). We assess the importance of a regressor as the range of values for that regressor divided by its the length scale. Normalising by the range allows us to compare regressors of different units; we express the importance of a regressor to the particular dataset at hand. 
+We can use these length scales to assess the relative importances of each regressor to our regression. Imagine that we make a change of fixed magnitude in, first, a regressor with small length scale, and second, a regressor with large length scale. The regressand can be expected to vary more dramatically in the first case than in the second. As such, we think of regressors with small length scale as more significant; they are likely to explain more of the variation in the regressand. This gives rise to a widely and successfully used \cite{GPsBook} method of automatic relevance determination (\ARD), defined as 
+$$\text{\ARD} = \frac{R_i}{\sigma_i}\,,$$
+where $R_i$ is the range of the data in and $\sigma_i$ is the length scale of the $i$\thth\ regressor. Explicitly, the higher the value of \ARD, the greater the assessed  importance of a regressor to the particular dataset at hand.
 
-We also propose a novel metric of regressor importance to improve upon one aspect of the ARD method. ARD accounts only for the influence of a regressor on the covariance of a \gp; it neglects what influence it may have upon the mean. For example, the regressand may be exactly linear in one regressor, a fact perfectly captured by an affine prior mean function. The length scale for this regressor, however, will likely be very large, reflecting that the variation around the linear prior mean is negligible, and hence ARD would incorrectly assess that regressor as being relatively unimportant. To construct an alternative to ARD, we consider the gradient of the posterior mean of the \gp\ with respect to the regressors. The larger the $i$th element of this gradient, the greater the expected change in the regressand with respect to the $i$th regressor, and the more important that regressor could be considered to be. We use this intuition to specify the metric of regressor $i$'s importance
-$$(\Delta y)_i = (\text{max}_t x_{t,i} - \text{min}_{t=1}^T x_{t,i} ) \sum_t \Big\lvert\frac{\partial m(\bm{x}_{t})}{\partial x_{t,i}}\Big\rvert\,,$$
-where the $t$th data-point is $\bm{x}_t = (x_{t,i}; \forall i)$ and $m(\cdot)$ is the posterior mean function of the \gp.
+We also propose another metric of regressor importance to improve upon one aspect of the \ARD\ method. \ARD\ accounts only for the influence of a regressor on the covariance of a \gp; it neglects what influence it may have upon the mean. For example, the regressand may be exactly linear in one regressor, a fact perfectly captured by an affine prior mean function. The length scale for this regressor, however, will likely be very large, reflecting that the variation around the linear prior mean is negligible, and hence \ARD\ would incorrectly assess that regressor as being unimportant. To construct an alternative to \ARD, we consider the gradient of the posterior mean of the \gp\ with respect to the regressors. The larger the $i$\thth\ element of this gradient, the greater the expected change in the regressand with respect to the $i$\thth\ regressor, and the more important that regressor could be considered to be. We use this intuition to specify the metric of regressor $i$'s importance
+$$(\Delta y)_i =  \frac{R_i}{D}\sum_{d=1}^{D} \Big\lvert\frac{\partial m(\bm{x}_{d})}{\partial x_{d,i}}\Big\rvert\,,$$
+where the $d$\thth\ data-point is $\bm{x}_d = (x_{d,i};\, \forall i)$ and $m(\cdot)$ is the posterior mean function of the \gp. We hence expect $\Delta y$ to give the average (across all data) absolute change in regressand were we to shift all observed regressors by the range of that regressor. Again, the larger the value of $\Delta y$, the more important we judge a regressor. 
 
 \begin{figure*}
   \centering
@@ -158,21 +160,21 @@ where the $t$th data-point is $\bm{x}_t = (x_{t,i}; \forall i)$ and $m(\cdot)$ i
 
 \begin{table}
   \centering
-  \caption{Assessment of regressor importances.}
+  \caption{Assessment of regressor importances to predictions of AERONET AOD at 550 nm.}
   \label{tbl:results}
   \begin{tabular}{@{}lrrrr@{}}
     \toprule
 & \multicolumn{2}{c}{Aqua} & \multicolumn{2}{c}{Terra} 
 \\ \cmidrule(rl){2-3} \cmidrule(l){4-5}
-    regressor & ARD & $\Delta y/10^3$& ARD & $\Delta y/10^3$\\
+    regressor & \ARD & $\Delta y$& \ARD & $\Delta y$\\
     \midrule
-solar zenith angle & 17.3& 1.8 & 8.5 & 3.7\\
-solar azimuth angle & \bm{187.7}&\bm{11.5} & \bm{195.8}& \bm{31.5}\\
-sensor zenith angle & 3.7& 1.3 & 5.6 & 3.2\\
-sensor azimuth angle & 0.0& 0.0 & 166.6& 17.3\\
-scattering angle & 7.3& 1.4 & 1.99& 0.2\\
-surface reflectance & 0.1&0.0  & 8.25& 0.0\\
-MODIS optical depth & 3.1& 0.0 & 1.42& 0.0\\
+solar zenith angle & 17.3& 2.7 & 8.5 & 3.0\\
+solar azimuth angle & \bm{187.7}&\bm{17.3} & \bm{195.8}& \bm{25.6}\\
+sensor zenith angle & 3.7& 1.9 & 5.6 & 2.6\\
+sensor azimuth angle & 0.0& 0.0 & 166.6& 14.1\\
+scattering angle & 7.3& 2.0 & 2.0& 0.2\\
+surface reflectance & 0.1&0.0  & 8.3& 0.0\\
+MODIS optical depth & 3.1& 0.1 & 1.4& 0.0\\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -188,6 +190,9 @@ Overall, the machine learning results show us that there is opportunity in the M
 \section{Conclusions \label{Section.Conclusions}}
 
 Machine learning algorithms were able to effectively adjust the AOD bias seen between the MODIS instruments and AERONET. Support vector machines performed the best improving the correlation coefficient between the AERONET AOD and the MODIS AOD from 0.86 to 0.99 for MODIS Aqua, and from 0.84 to 0.99 for MODIS Terra. Key in allowing the machine learning algorithms to \lq correct' the MODIS bias was provision of the surface type and other ancillary variables that explain the variance between MODIS and AERONET AOD.
+
+The benefits of using a \gp\ are clear. In addition to improving upon the performance of a benchmark \svm, the \gp\ was also able to provide principled uncertainty estimates in its predictions, and provide an assessment of input importance.
+
 
 \appendices
 \section*{Acknowledgment}
