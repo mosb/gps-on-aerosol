@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2010.8.27)  17 FEB 2011 14:26
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2010.8.27)  17 FEB 2011 17:05
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -358,36 +358,34 @@ Missing character: There is no ï in font ptmr7t!
 Missing character: There is no ¿ in font ptmr7t!
 Missing character: There is no ½ in font ptmr7t!
 
-Underfull \hbox (badness 1776) in paragraph at lines 191--192
+Underfull \hbox (badness 1776) in paragraph at lines 195--196
 []\OT1/ptm/m/n/10 It is a plea-sure to ac-knowl-edge NASA for re-search
  []
 
 
-Underfull \hbox (badness 1496) in paragraph at lines 191--192
+Underfull \hbox (badness 1496) in paragraph at lines 195--196
 \OT1/ptm/m/n/10 NNX06AF29G, NNX07AD49G and the NASA God-dard
  []
 
-(./IEEE-v3.bbl [3]
+[3] (./IEEE-v3.bbl
 ** WARNING: IEEEtran.bst: No hyphenation pattern has been
 ** loaded for the language `{English}'. Using the pattern for
 ** the default language instead.
 ** WARNING: IEEEtran.bst: No hyphenation pattern has been
 ** loaded for the language `{English}'. Using the pattern for
 ** the default language instead.
-) [4
-
-] (./IEEE-v3.aux)
+) [4] (./IEEE-v3.aux)
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 3670 strings out of 495062
- 48054 string characters out of 1182644
- 122548 words of memory out of 3000000
- 6777 multiletter control sequences out of 15000+50000
- 36729 words of font info for 99 fonts, out of 3000000 for 9000
+ 3672 strings out of 495062
+ 48073 string characters out of 1182644
+ 121054 words of memory out of 3000000
+ 6778 multiletter control sequences out of 15000+50000
+ 37037 words of font info for 100 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
- 41i,11n,35p,1773b,329s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 41i,10n,35p,1773b,329s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on IEEE-v3.dvi (4 pages, 37332 bytes).
+Output written on IEEE-v3.dvi (4 pages, 39384 bytes).
